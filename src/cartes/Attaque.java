@@ -1,14 +1,13 @@
 package cartes;
 
-public class Attaque extends Bataille {
+public class Attaque extends Carte {
 
-	public Attaque(Type type) {
-		super(type);
-	}
-	
-	@Override
-	public String toString() {
-		return "Attaque: " + getType().getAttaque();
-	}
+    public Attaque(String nom) {
+        super(Type.ATTAQUE, nom);
+    }
 
+    @Override
+    public String toString() {
+        return "Attaque: " + nom;
+    }
 }

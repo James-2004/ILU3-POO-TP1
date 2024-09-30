@@ -1,19 +1,15 @@
 package cartes;
 
 public abstract class Carte {
-	private String nom;
+    protected Type type;
+    protected String nom;
 
-	public Carte(String nom) {
-		this.nom = nom;
-	}
-	
-	public String getNom() {
-		return nom;
-	}
-	
-	@Override
-	public String toString() {
-		return nom;
-	}
+    public Carte(Type type, String nom) {
+        this.type = type;
+        this.nom = nom;
+    }
 
+    public abstract String toString();
 }
+
+

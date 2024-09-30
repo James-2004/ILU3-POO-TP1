@@ -1,35 +1,26 @@
 package cartes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class JeuDeCartes {
-    private Configuration[] typesDeCartes;
+    private List<Configuration> configurations;
 
-//    public JeuDeCartes() {
-        // Initialisation des cartes et de leurs configurations
-//        typesDeCartes = new Configuration[] {
-//            new Configuration(new Borne(25), 10),
-//            new Configuration(new Borne(50), 10),
-//            new Configuration(new Borne(75), 10),
-//            new Configuration(new Borne(100), 12),
-//            new Configuration(new Borne(200), 4),
-//            new Configuration(new FeuVert(), 14),
-//            new Configuration(new FeuRouge(), 5),
-//            new Configuration(new Limite(), 4), // Ajoute des classes comme Limite
-//            new Configuration(new Crevaison(), 3),
-//            new Configuration(new PanneEssence(), 3),
-//            new Configuration(new Reparation(), 6),
-//            new Configuration(new AsDuVolant(), 1),
-            // Ajoute toutes les autres cartes ici...
-//        };
-//    }
+    // Constructeur
+    public JeuDeCartes() {
+        configurations = new ArrayList<>();
+    }
 
-    public String affichageJeuDeCartes() {
-        StringBuilder affichage = new StringBuilder("JEU :\n");
-        for (Configuration config : typesDeCartes) {
-            affichage.append(config.getNbExemplaires())
-                     .append(" ")
-                     .append(config.getCarte().toString())
-                     .append("\n");
+    // Ajoute une configuration de carte avec le nombre d'exemplaires
+    public void ajouterConfiguration(Carte carte, int nombreExemplaires) {
+        configurations.add(new Configuration(carte, nombreExemplaires));
+    }
+
+    // Méthode d'affichage du jeu de cartes
+    public void affichageJeuDeCartes() {
+        System.out.println("JEU :");
+        for (Configuration configuration : configurations) {
+            System.out.println(configuration.getNombreExemplaires() + " " + configuration.getCarte());
         }
-        return affichage.toString();
     }
 }

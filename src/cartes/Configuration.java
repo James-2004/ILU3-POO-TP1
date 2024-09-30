@@ -2,18 +2,18 @@ package cartes;
 
 public class Configuration {
     private Carte carte;
-    private int nbExemplaires;
+    private int nombreExemplaires;
 
-    public Configuration(Carte carte, int nbExemplaires) {
+    public Configuration(Carte carte, int nombreExemplaires) {
         this.carte = carte;
-        this.nbExemplaires = nbExemplaires;
+        this.nombreExemplaires = nombreExemplaires;
     }
 
     public Carte getCarte() {
         return carte;
     }
 
-    public int getNbExemplaires() {
-        return nbExemplaires;
+    public int getNombreExemplaires() {
+        return nombreExemplaires;
     }
 }

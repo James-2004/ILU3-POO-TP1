@@ -1,10 +1,13 @@
 package cartes;
 
 public class Borne extends Carte {
+    public Borne(String nom) {
+        super(Type.BORNE, nom); // Ici, tu passes un Type BORNE en plus du nom
+    }
 
-	public Borne(String nom) {
-		super(nom);
-		// TODO Auto-generated constructor stub
-	}
-
+    @Override
+    public String toString() {
+        return nom;
+    }
 }
+

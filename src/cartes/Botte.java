@@ -1,14 +1,14 @@
 package cartes;
 
-public class Botte extends Probleme {
+public class Botte extends Carte {
 
-	public Botte(Type type) {
-		super(type);
-	}
-	
-	@Override
-	public String toString() {
-		return "Botte: " + getType().getBotte();
-	}
+    public Botte(String nom) {
+        super(Type.BOTTE, nom);
+    }
 
+    @Override
+    public String toString() {
+        return "Botte: " + nom;
+    }
 }
+

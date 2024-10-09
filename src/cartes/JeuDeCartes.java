@@ -1,26 +1,49 @@
 package cartes;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JeuDeCartes {
-    private List<Configuration> configurations;
+    private Carte[] cartes; // Tableau de cartes
+    private Map<String, Integer> configuration; // Configuration souhaitée du nombre de cartes
 
-    // Constructeur
-    public JeuDeCartes() {
-        configurations = new ArrayList<>();
+    // Constructeur qui prend en paramètre le tableau de cartes et la configuration
+    public JeuDeCartes(Carte[] cartes, Map<String, Integer> configuration) {
+        this.cartes = cartes;
+        this.configuration = configuration;
     }
 
-    // Ajoute une configuration de carte avec le nombre d'exemplaires
-    public void ajouterConfiguration(Carte carte, int nombreExemplaires) {
-        configurations.add(new Configuration(carte, nombreExemplaires));
+    // Méthode pour obtenir le tableau de cartes
+    public Carte[] getCartes() {
+        return cartes;
     }
 
-    // Méthode d'affichage du jeu de cartes
-    public void affichageJeuDeCartes() {
-        System.out.println("JEU :");
-        for (Configuration configuration : configurations) {
-            System.out.println(configuration.getNombreExemplaires() + " " + configuration.getCarte());
+    public boolean checkCount() {
+        // Créer un Map pour compter les occurrences des cartes
+        Map<String, Integer> compteur = new HashMap<>();
+        for (Carte carte : cartes) {
+            String nomCarte = carte.getNom();
+            compteur.put(nomCarte, compteur.getOrDefault(nomCarte, 0) + 1);
         }
+
+        // Vérifier que chaque carte dans la configuration est présente avec le bon nombre d'occurrences
+        for (Map.Entry<String, Integer> entry : configuration.entrySet()) {
+            String nomCarte = entry.getKey();
+            int nombreAttendu = entry.getValue();
+            int nombreActuel = compteur.getOrDefault(nomCarte, 0);
+
+            if (nombreActuel != nombreAttendu) {
+                return false; // Les comptes ne correspondent pas
+            }
+        }
+
+        // Vérifier qu'il n'y a pas de cartes supplémentaires dans le tableau
+        for (String nomCarte : compteur.keySet()) {
+            if (!configuration.containsKey(nomCarte)) {
+                return false; // Une carte est présente dans le tableau mais pas dans la configuration
+            }
+        }
+
+        return true; // Tout est correct
     }
 }

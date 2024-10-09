@@ -9,7 +9,33 @@ public abstract class Carte {
         this.nom = nom;
     }
 
-    public abstract String toString();
+    public Type getType() {
+        return type;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Carte autreCarte = (Carte) obj;
+        return nom.equals(autreCarte.nom);
+    }
+
+    @Override
+    public int hashCode() {
+        return nom.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return type + ": " + nom;
+    }
 }
-
-

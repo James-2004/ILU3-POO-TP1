@@ -44,6 +44,6 @@ public class JeuDeCartes {
             }
         }
 
-        return true; // Tout est correct
+        return true; 
     }
 }

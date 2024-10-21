@@ -2,7 +2,6 @@ package testsFonctionnels;
 
 import cartes.*;
 import jeu.Sabot;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class TestSabot {
@@ -20,37 +19,42 @@ public class TestSabot {
         // Crée le sabot avec les cartes
         Sabot sabot = new Sabot(cartes);
 
+        // ---------------------
+        // TEST 1 : Ajout dans un sabot PLEIN
+        // ---------------------
         try {
-            // Étape a : Pioche une carte avant d'entrer dans la boucle
-            Carte carte = sabot.piocher();
-            System.out.println("Je pioche " + carte);
+            System.out.println("Test d'ajout dans un sabot plein :");
 
-            // Étape b : Utilisation de l'itérateur et remove pour piocher et supprimer les cartes
-            Iterator<Carte> it = sabot.iterator();
-            int iteration = 0; // Compteur d'itérations pour ajouter AsDuVolant après 2 piocheurs
-            while (it.hasNext()) {
-                carte = it.next();
-                System.out.println("Je pioche " + carte);
-                it.remove(); // Supprime la carte après l'avoir piochée
-
-                // Étape c : Tentative d'ajouter une carte dans la boucle pour provoquer une exception
-                if (iteration == 2) { // On insère AsDuVolant à la 3e itération
-                    sabot.ajouterCarte(new Botte("AsDuVolant"));
-                    System.out.println("Ajout de la carte AsDuVolant dans la boucle.");
-                }
-                iteration++;
+            // Ajout de cartes au maximum de la capacité
+            for (int i = 0; i < cartes.length; i++) {
+                System.out.println("Ajout de la carte " + cartes[i].getNom());
             }
+
+            // Tentative d'ajouter une carte après avoir atteint la capacité maximale
+            sabot.ajouterCarte(new Botte("AsDuVolant"));
+            System.out.println("Ajout de la carte AsDuVolant.");
+            
+            // Tentative d'ajouter une autre carte alors que le sabot est plein
+            sabot.ajouterCarte(new Botte("SuperVolant")); // Cela doit lever une exception
 
         } catch (IllegalStateException e) {
             System.out.println("Erreur : Capacité maximale du sabot atteinte.");
-        } catch (NoSuchElementException e) {
-            System.out.println("Le sabot est vide !");
         }
 
-        // Tentative de piocher après que le sabot soit vide, ce qui devrait lever une exception
+        // ---------------------
+        // TEST 2 : Pioche dans un sabot VIDE
+        // ---------------------
         try {
-            Carte carte = sabot.piocher(); // Ce piocheur doit lever une exception
-            System.out.println("Je pioche " + carte);
+            System.out.println("\nTest de pioche dans un sabot vide :");
+
+            // Piocher toutes les cartes du sabot jusqu'à le vider
+            for (int i = 0; i < cartes.length; i++) {
+                System.out.println("Je pioche " + sabot.piocher());
+            }
+
+            // Tentative de piocher à nouveau dans un sabot vide
+            sabot.piocher(); // Cela doit lever une exception NoSuchElementException
+
         } catch (NoSuchElementException e) {
             System.out.println("Erreur : Le sabot est vide !");
         }

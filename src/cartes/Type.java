@@ -1,11 +1,14 @@
 package cartes;
 
-
 public enum Type {
     ATTAQUE("Attaque"),
     PARADE("Parade"),
     BOTTE("Botte"),
-    BORNE("Borne");
+    BORNE("Borne"),
+    LIMITE("Limite"),
+    CREVAISON("Crevaison"),
+    ESSENCE("Essence"),
+    ACCIDENT("Accident");
 
     private String description;
 

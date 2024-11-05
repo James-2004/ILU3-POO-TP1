@@ -1,18 +1,21 @@
 package cartes;
 
-public class Attaque extends Carte {
-    // Constructeur pour les tests existants
-    public Attaque(String nom) {
-        super(Type.ATTAQUE, nom);
-    }
-    
-    // Nouveau constructeur pour la partie 3
-    public Attaque(Type type) {
-        super(type, type.getDescription()); // Utilise la description du type
-    }
+public class Attaque extends Bataille {
 
-    @Override
-    public String toString() {
-        return "Attaque: " + getNom();
-    }
+	public Attaque(Type type) {
+		super(type);
+	}
+
+	@Override
+	public String toString() {
+		return this.type.getAttaque();
+	}
+	
+	@Override
+	public boolean equals(Carte carte) {
+		if(carte instanceof Attaque att) {
+			return type.equals(att.getType());
+		}
+		return false;
+	}
 }

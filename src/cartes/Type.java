@@ -1,28 +1,37 @@
 package cartes;
 
 public enum Type {
-    ATTAQUE("Attaque"),
-    PARADE("Parade"),
-    BOTTE("Botte"),
-    BORNE("Borne"),
-    LIMITE("Limite"),
-    CREVAISON("Crevaison"),
-    ESSENCE("Essence"),
-    ACCIDENT("Accident");
+	FEU("feu", "Feu Rouge", "Feu Vert", "Vehicule Prioritaire"),
+	ESSENCE("essence","Panne d'Essence", "Essence", "Canmion Citerne"), 
+	CREVAISON("crevaison", "crevaison", "Roue De Secours", "Increvable"),
+	ACCIDENT("accident", "Accident", "Reparations", "As Du Volent");
+	
+	private String type;
+	private String attaque;
+	private String contre;
+	private String botte;
+	
+	private Type(String type, String attaque, String contre, String botte) {
+		this.type = type;
+		this.attaque = attaque;
+		this.contre = contre;
+		this.botte = botte;
+	}
+	
+	public String getNom(String type) {
+		return type;
+		
+	}
 
-    private String description;
+	public String getAttaque() {
+		return attaque;
+	}
 
-    // Constructeur pour l'énumération Type
-    Type(String description) {
-        this.description = description;
-    }
+	public String getContre() {
+		return contre;
+	}
 
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public String toString() {
-        return description;
-    }
+	public String getBotte() {
+		return botte;
+	}
 }

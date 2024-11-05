@@ -1,23 +1,22 @@
 package testsFonctionnels;
 
-import cartes.*;
+import cartes.Attaque;
+import cartes.Borne;
+import cartes.Carte;
+import cartes.Parade;
+import cartes.Type;
 
 public class TestMethodeEquals {
-
-    public static void main(String[] args) {
-        // a. Tester deux objets de la carte Borne 25KM
-        Carte carte1 = new Borne("25KM");
-        Carte carte2 = new Borne("25KM");
-        System.out.println("Deux cartes de 25KM sont identiques ? " + carte1.equals(carte2));
-
-        // b. Tester deux objets de la carte Feu Rouge
-        Carte carte3 = new Attaque("Feu Rouge");
-        Carte carte4 = new Attaque("Feu Rouge");
-        System.out.println("Deux cartes de Feu Rouge sont identiques ? " + carte3.equals(carte4));
-
-        // c. Tester une carte Feu Rouge et une carte Feu Vert
-        Carte carte5 = new Attaque("Feu Rouge");
-        Carte carte6 = new Parade("Feu Vert");
-        System.out.println("La carte Feu Rouge et la carte Feu Vert sont identiques ? " + carte5.equals(carte6));
-    }
+	public static void main(String[] args) {
+		Carte carte25Bornes1 = new Borne(25);
+		Carte carte25Bornes2 = new Borne(25);
+		System.out.println("Deux cartes de 25km sont identiques ? " + carte25Bornes1.equals(carte25Bornes2));
+	
+		Carte carteFeuxRouge1 = new Attaque(Type.FEU);
+		Carte carteFeuxRouge2 = new Attaque(Type.FEU);
+		System.out.println("Deux cartes de feux rouge sont identiques ? " + carteFeuxRouge1.equals(carteFeuxRouge2));
+		
+		Carte carteFeuxVert = new Parade(Type.FEU);
+		System.out.println("La carte feu rouge et la carte feu vert sont identiques ? " + carteFeuxRouge1.equals(carteFeuxVert));
+	}
 }

@@ -1,76 +1,102 @@
 package jeu;
 
-import cartes.Carte;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class Sabot implements Iterable<Carte> {
-    private Carte[] cartes; // Tableau pour stocker les cartes
-    private int nbCartes;   // Nombre actuel de cartes dans le sabot
+import cartes.Carte;
 
-    // Constructeur
-    public Sabot(Carte[] cartes) {
-        this.cartes = new Carte[cartes.length];
-        System.arraycopy(cartes, 0, this.cartes, 0, cartes.length);
-        this.nbCartes = cartes.length; // Initialement, toutes les cartes du jeu sont dans le sabot
-    }
+public class Sabot<E extends Carte> implements Iterable<E> {
+	private static final int MAX_CARTES = 106;
+	
+	private final E[] sabot;
+	private int nbCartes;
+	private int operationCount = 0;
+	
+	public Sabot(E[] cartes) {
+		this.sabot = cartes;
+		this.nbCartes = cartes.length;
+	}
+	
+	public boolean estVide() {
+		return this.nbCartes == 0;
+	}
+	
+	public void ajouterCarte(E carte) {
+		if (nbCartes < MAX_CARTES) {
+			sabot[nbCartes++] = carte;
+			operationCount++; // invalidate existing iterators
+		} else {
+			throw new IndexOutOfBoundsException("Le Sabot est déjà plein");
+		}
+	}
+	
+	public E piocher() {
+		Iterator<E> iterator = this.iterator();
+		
+		if (iterator.hasNext()) {
+			E drawnCard = iterator.next();
+			iterator.remove();
+			nbCartes--;
+			operationCount++;
+			
+			return drawnCard;
+		} else {
+			throw new NoSuchElementException("Le sabot est vide");
+		}
+	}
+	
+	@Override
+	public Iterator<E> iterator() {
+		return new Iterateur();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////CLASSE INTERNE///////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////
+	
+	private class Iterateur implements Iterator<E> {
+		private int currentIndex = 0;
+		private final int initialOperationCount = operationCount;
+		private boolean canRemove = false;
 
-    // Vérifie si le sabot est vide
-    public boolean estVide() {
-        return nbCartes == 0;
-    }
+		@Override
+		public boolean hasNext() {
+			return currentIndex < nbCartes;
+		}
 
-    // Ajoute une carte au sabot
-    public void ajouterCarte(Carte carte) throws IllegalStateException {
-        // Si le tableau de cartes est plein, lever IllegalStateException
-        if (nbCartes >= cartes.length) {
-            throw new IllegalStateException("Capacité maximale du sabot atteinte.");
-        }
-        cartes[nbCartes] = carte;
-        nbCartes++; // Incrémente le nombre de cartes après ajout
-    }
-
-    // Piocher une carte du sabot
-    public Carte piocher() throws NoSuchElementException {
-        if (estVide()) {
-            throw new NoSuchElementException("Le sabot est vide.");
-        }
-        Carte cartePiochée = cartes[0];
-        System.arraycopy(cartes, 1, cartes, 0, nbCartes - 1); // Décale les cartes
-        nbCartes--; // Réduit le nombre de cartes
-        return cartePiochée;
-    }
-
-    @Override
-    public Iterator<Carte> iterator() {
-        return new Iterator<Carte>() {
-            private int index = 0;
-            private boolean modifiable = false;
-
-            @Override
-            public boolean hasNext() {
-                return index < nbCartes;
-            }
-
-            @Override
-            public Carte next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException("Le sabot est vide.");
-                }
-                modifiable = true;
-                return cartes[index++];
-            }
-
-            @Override
-            public void remove() {
-                if (!modifiable) {
-                    throw new IllegalStateException("Impossible de supprimer avant next().");
-                }
-                System.arraycopy(cartes, index, cartes, index - 1, nbCartes - index);
-                nbCartes--;
-                index--;
-                modifiable = false;
-            }
-        };
-    }
+		@Override
+		public E next() {
+			checkForModification();
+			
+			if (hasNext()) {
+				E element = sabot[currentIndex++];
+				canRemove = true;
+				
+				return element;
+			} else {
+				throw new NoSuchElementException("Sortie du sabot");
+			}
+		}
+		
+		@Override
+		public void remove() {
+			checkForModification();
+			
+			if (canRemove) {
+				System.arraycopy(sabot, currentIndex, sabot, currentIndex - 1, nbCartes - currentIndex);
+				nbCartes--;
+				operationCount++;
+				canRemove = false;
+			} else {
+				throw new IllegalStateException();
+			}
+		}
+		
+		private void checkForModification() {
+			 if (operationCount != initialOperationCount) {
+				 throw new ConcurrentModificationException();
+			 }
+		}
+	}		
 }

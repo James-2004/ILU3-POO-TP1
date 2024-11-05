@@ -1,91 +1,83 @@
 package utils;
 
-import cartes.Carte;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Random;
 
 public class GestionCartes {
+	private static Random rand = new Random();
+	
+	public static <T> T extraire(List<T> liste) {
+		int length = liste.size();
+		int index = rand.nextInt(length);
+		
+		return liste.remove(index);
+	} 
+	
+	
+	public static <T> List<T> melanger(List<T> liste) {
+		List<T> listeMelange = new ArrayList<>();
+		
+		for (int length = liste.size(); length > 0; length --) {
+			listeMelange.add(extraire(liste));
+		}
+		return listeMelange;
+	}
+	
+	
+	public static <T> boolean verifierMelange(List<T> liste, List<T> liste2) {
+		if (liste.size() != liste2.size()) {
+			return false;
+		} else {
+			
+			for(int i = 0; i < liste.size(); i++) {
+				T c = liste.get(i);
+				if(Collections.frequency(liste, c) != Collections.frequency(liste2, c)) {
+					return false;
+				}
+			}
+			return true; 
+		}
+	}
+	
+	
+	public static <T> List<T> rassembler(List<T> liste){
+		List<T> listeRassembler= new ArrayList<>();
+		
+		for(ListIterator<T> iter = liste.listIterator();iter.hasNext();) {
+			T elem = iter.next();
+			if (listeRassembler.contains(elem)){
+				listeRassembler.add(listeRassembler.lastIndexOf(elem), elem);
+			} else {
+				listeRassembler.add(elem);
+			}
+		}
+        	
+		return listeRassembler;
+	}
+	
+	
+	public static <T> boolean verifierRassemblement(List <T> list) {
+        ListIterator<T> iterator1 = list.listIterator();
+        T curseur = iterator1.next(); 
+        while(iterator1.hasNext()) {
+            T prochain = iterator1.next(); 
+            if(!curseur.equals(prochain)) {
+                 ListIterator<T> iterator2 = list.listIterator(iterator1.nextIndex());
 
-    // a. Méthode extraire (version travaillant directement sur la liste)
-    public static Carte extraire(List<Carte> liste) {
-        if (liste.isEmpty()) {
-            throw new IllegalArgumentException("La liste ne doit pas être vide.");
-        }
-        int index = (int) (Math.random() * liste.size());
-        return liste.remove(index);
-    }
 
-    // a. Méthode extraire (version utilisant un ListIterator)
-    public static Carte extraireAvecIterator(List<Carte> liste) {
-        if (liste.isEmpty()) {
-            throw new IllegalArgumentException("La liste ne doit pas être vide.");
-        }
-        int index = (int) (Math.random() * liste.size());
-        ListIterator<Carte> iterator = liste.listIterator();
-        Carte carteExtraite = null;
-        for (int i = 0; i <= index; i++) {
-            carteExtraite = iterator.next();
-        }
-        iterator.remove();
-        return carteExtraite;
-    }
+               while (iterator2.hasNext()) {
+                   if (curseur.equals(iterator2.next())) {
+                       return false;
+                   }
+               }
 
-    // b. Méthode mélanger
-    public static List<Carte> melanger(List<Carte> liste) {
-        List<Carte> copie = new ArrayList<>(liste);
-        Collections.shuffle(copie);
-        liste.clear(); // Vider la liste d'origine
-        return copie; // Retourner la liste mélangée
-    }
-
-    // c. Méthode verifierMelange
-    public static boolean verifierMelange(List<Carte> listeOriginale, List<Carte> listeMelangee) {
-        if (listeOriginale.size() != listeMelangee.size()) {
-            return false; // Les listes doivent avoir la même taille
-        }
-        for (Carte carte : listeOriginale) {
-            int occurrencesOriginale = Collections.frequency(listeOriginale, carte);
-            int occurrencesMelangee = Collections.frequency(listeMelangee, carte);
-            if (occurrencesOriginale != occurrencesMelangee) {
-                return false; // Le nombre d'occurrences doit être le même
-            }
-        }
+               curseur = prochain;
+           }
+       }
+	
         return true;
-    }
-
-    // d. Méthode rassembler
-    public static List<Carte> rassembler(List<Carte> liste) {
-        List<Carte> copie = new ArrayList<>(liste);
-        copie.sort((c1, c2) -> c1.getNom().compareTo(c2.getNom()));
-        return copie;
-    }
-
-    // e. Méthode verifierRassemblement
-    public static boolean verifierRassemblement(List<Carte> liste) {
-        if (liste.isEmpty()) {
-            return true; // Une liste vide est considérée comme correctement rassemblée
-        }
-
-        ListIterator<Carte> it1 = liste.listIterator();
-        Carte derniereCarte = it1.next();
-
-        while (it1.hasNext()) {
-            Carte carteActuelle = it1.next();
-            if (!carteActuelle.getNom().equals(derniereCarte.getNom())) {
-                // Vérifier s'il y a une autre occurrence de derniereCarte plus loin dans la liste
-                ListIterator<Carte> it2 = liste.listIterator(it1.nextIndex());
-                while (it2.hasNext()) {
-                    if (it2.next().getNom().equals(derniereCarte.getNom())) {
-                        return false; // Une autre occurrence est trouvée plus loin
-                    }
-                }
-            }
-            derniereCarte = carteActuelle;
-        }
-        return true;
-    }
+	}
 }

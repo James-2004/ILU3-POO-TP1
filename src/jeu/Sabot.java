@@ -6,43 +6,44 @@ import java.util.NoSuchElementException;
 
 import cartes.Carte;
 
-public class Sabot<E extends Carte> implements Iterable<E> {
-	private static final int MAX_CARTES = 106;
+public class Sabot<E extends Carte> implements Iterable<E>{
+	private static int NB_CARTES = 106;
 	
-	private final E[] sabot;
+	private E[] sabot;
 	private int nbCartes;
-	private int operationCount = 0;
+	private int nombreOperations = 0;
+	
 	
 	public Sabot(E[] cartes) {
 		this.sabot = cartes;
-		this.nbCartes = cartes.length;
+		this.nbCartes = sabot.length;
 	}
 	
 	public boolean estVide() {
-		return this.nbCartes == 0;
+		return nbCartes == 0;
 	}
 	
 	public void ajouterCarte(E carte) {
-		if (nbCartes < MAX_CARTES) {
-			sabot[nbCartes++] = carte;
-			operationCount++; // invalidate existing iterators
+		if(nbCartes < NB_CARTES) {
+			sabot[nbCartes] = carte;
+			nombreOperations++; // les itĆ©rateurs existants perdent leur droit dā€™accĆØs
 		} else {
-			throw new IndexOutOfBoundsException("Le Sabot est déjà plein");
+			throw new IndexOutOfBoundsException("Le Sabot est dĆ©jĆ  plein");
 		}
 	}
 	
 	public E piocher() {
-		Iterator<E> iterator = this.iterator();
+		Iterator<E> it = iterator();
 		
-		if (iterator.hasNext()) {
-			E drawnCard = iterator.next();
-			iterator.remove();
-			nbCartes--;
-			operationCount++;
+		if(it.hasNext()) {
+			E cartePioche = it.next();
+			it.remove();
+			nombreOperations ++;
+			nbCartes --;
 			
-			return drawnCard;
+			return cartePioche;
 		} else {
-			throw new NoSuchElementException("Le sabot est vide");
+			throw new NoSuchElementException("le sabot est vide");
 		}
 	}
 	
@@ -55,23 +56,25 @@ public class Sabot<E extends Carte> implements Iterable<E> {
 	/////////////////////////////CLASSE INTERNE///////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////
 	
-	private class Iterateur implements Iterator<E> {
-		private int currentIndex = 0;
-		private final int initialOperationCount = operationCount;
-		private boolean canRemove = false;
+	private class Iterateur implements Iterator<E>{
+		private int indiceIterateur = 0;
+		private int nombreOperationsReference = nombreOperations;
+		private boolean nextEffectue = false;
 
 		@Override
 		public boolean hasNext() {
-			return currentIndex < nbCartes;
+			return indiceIterateur < nbCartes;
 		}
 
 		@Override
 		public E next() {
-			checkForModification();
+			verificationConcurrence();
 			
 			if (hasNext()) {
-				E element = sabot[currentIndex++];
-				canRemove = true;
+				E element = sabot[indiceIterateur];
+				indiceIterateur ++;
+				nombreOperationsReference ++; nombreOperations ++;
+				nextEffectue = true;
 				
 				return element;
 			} else {
@@ -81,22 +84,23 @@ public class Sabot<E extends Carte> implements Iterable<E> {
 		
 		@Override
 		public void remove() {
-			checkForModification();
+			verificationConcurrence();
 			
-			if (canRemove) {
-				System.arraycopy(sabot, currentIndex, sabot, currentIndex - 1, nbCartes - currentIndex);
-				nbCartes--;
-				operationCount++;
-				canRemove = false;
+			if (nextEffectue) {
+				for(int i = indiceIterateur - 1; i < nbCartes - 1; i++) {
+					sabot[i] = sabot[i + 1];
+				}
+				
+				nextEffectue = false;
+				nombreOperations ++; nombreOperationsReference ++;
 			} else {
 				throw new IllegalStateException();
 			}
 		}
 		
-		private void checkForModification() {
-			 if (operationCount != initialOperationCount) {
+		private void verificationConcurrence(){
+			 if (nombreOperations != nombreOperationsReference)
 				 throw new ConcurrentModificationException();
-			 }
 		}
 	}		
 }

@@ -16,9 +16,9 @@ public class TestGestionCartes {
 			listeCarteNonMelangee.add(carte);
 		}
 		List<Carte> listeCartes = new ArrayList<>(listeCarteNonMelangee);
-//		System.out.println(listeCartes);
+		System.out.println(listeCartes);
 		listeCartes = GestionCartes.melanger(listeCartes);
-//		System.out.println(listeCartes);
+		System.out.println(listeCartes);
 		System.out.println(
 				"liste m�lang�e sans erreur ? " + GestionCartes.verifierMelange(listeCarteNonMelangee, listeCartes));
 		listeCartes = GestionCartes.rassembler(listeCartes);
